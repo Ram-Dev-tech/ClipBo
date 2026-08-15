@@ -60,11 +60,13 @@ cat << 'EOF' > "$APP_DIR/Contents/Info.plist"
     <string>NSApplication</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>NSAccessibilityUsageDescription</key>
+    <string>ClipBo uses Accessibility to quickly capture selected text and images when you trigger Quick Capture or Selection Capture.</string>
 </dict>
 </plist>
 EOF
 
-echo "✍️  Ad-hoc codesigning $APP_DIR..."
-codesign --force --deep --sign - "$APP_DIR"
+echo "✍️  Ad-hoc codesigning $APP_DIR with persistent identifier..."
+codesign --force --deep --sign - --identifier "com.clipbo.app" "$APP_DIR"
 
 echo "✅ ClipBo.app built successfully at: $APP_DIR"
