@@ -10,6 +10,7 @@ Icon
 # Xcode, VS Code & Swift Package Manager Build Artifacts
 .build/
 build/
+dist/
 DerivedData/
 .vscode/
 *.xcodeproj/xcuserdata/
@@ -29,9 +30,9 @@ DerivedData/
 *.provisionprofile
 credentials.json
 secrets.json
-*secret*
-*credential*
-*token*
+*.secrets.json
+*.tokens.json
+*.credentials.json
 
 # Temporary Files, Logs & PID
 *.swp
@@ -42,3 +43,8 @@ secrets.json
 *.bak
 .system_generated/
 *.pid
+
+# Whitelist Source and Test Files
+!Sources/**
+!Tests/**
+!scripts/**
