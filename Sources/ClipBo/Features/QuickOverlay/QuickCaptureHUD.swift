@@ -182,6 +182,15 @@ struct QuickCaptureHUDView: View {
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
         }
         .shadow(color: Color.black.opacity(0.18), radius: 12, x: 0, y: 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if state == .accessibilityRequired {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                    NSWorkspace.shared.open(url)
+                }
+                onDismiss()
+            }
+        }
     }
 
     private var primaryText: String {
