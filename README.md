@@ -144,7 +144,7 @@ ClipBo is engineered around a strict local-first privacy architecture:
 For normal users who want to run ClipBo on their Mac:
 
 1. **Download the DMG**:
-   Download the latest **[ClipBo.dmg](https://github.com/Ram-Dev-tech/ClipBo/releases/download/v0.6.4/ClipBo.dmg)** release artifact.
+   Download the latest **[ClipBo.dmg](https://github.com/Ram-Dev-tech/ClipBo/releases/download/v0.6.4/ClipBo.dmg)** (or direct from the repository at **[dist/ClipBo.dmg](https://github.com/Ram-Dev-tech/ClipBo/raw/main/dist/ClipBo.dmg)**).
 2. **Open the DMG**:
    Double-click `ClipBo.dmg` to mount the installer.
 3. **Drag to Applications**:
