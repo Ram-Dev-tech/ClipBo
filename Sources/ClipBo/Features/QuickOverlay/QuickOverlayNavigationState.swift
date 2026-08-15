@@ -19,13 +19,19 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
     @Published public var selectedCategory: ClipCategory = .all
     @Published public var selectedResultIndex: Int = 0
 
-    public init(initialState: QuickOverlayNavigationState = .search, initialCategory: ClipCategory = .all) {
+    public init() {
+        self.state = .search
+        self.selectedCategory = .all
+        self.selectedCategoryId = "all"
+    }
+
+    public init(initialState: QuickOverlayNavigationState, initialCategory: ClipCategory) {
         self.state = initialState
         self.selectedCategory = initialCategory
         self.selectedCategoryId = initialCategory.rawValue
     }
 
-    public init(initialState: QuickOverlayNavigationState = .search, initialCategoryId: String = "all") {
+    public init(initialState: QuickOverlayNavigationState, initialCategoryId: String) {
         self.state = initialState
         self.selectedCategoryId = initialCategoryId
         self.selectedCategory = ClipCategory(rawValue: initialCategoryId) ?? .all
