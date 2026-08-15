@@ -40,7 +40,9 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
     /// In categories state: advances to the next category with circular wrap-around (last -> first).
     public func handleRightArrow(activeCategories: [CustomCategoryItem]) {
         guard !activeCategories.isEmpty else { return }
-        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId || $0.id == selectedCategory.rawValue }) ?? 0
+        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId })
+            ?? activeCategories.firstIndex(where: { $0.id == selectedCategory.rawValue })
+            ?? 0
         let nextIndex = (currentIndex + 1) % activeCategories.count
         let nextItem = activeCategories[nextIndex]
         let nextCat = ClipCategory(rawValue: nextItem.id) ?? .all
@@ -55,7 +57,9 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
     /// In search state or categories state: moves to previous category with circular wrap-around.
     public func handleLeftArrow(activeCategories: [CustomCategoryItem]) {
         guard !activeCategories.isEmpty else { return }
-        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId || $0.id == selectedCategory.rawValue }) ?? 0
+        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId })
+            ?? activeCategories.firstIndex(where: { $0.id == selectedCategory.rawValue })
+            ?? 0
         let prevIndex = (currentIndex - 1 + activeCategories.count) % activeCategories.count
         let prevItem = activeCategories[prevIndex]
         let prevCat = ClipCategory(rawValue: prevItem.id) ?? .all
