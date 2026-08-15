@@ -83,7 +83,7 @@ public struct QuickOverlayView: View {
                     // ── Category circles — ALWAYS VISIBLE ──
                     HStack(spacing: 0) {
                         // Active-category badge shown when filtering (non-all) + categories not expanded
-                        if navController.selectedCategory != .all && navController.state == .search {
+                        if navController.selectedCategory != .all && navController.state == QuickOverlayNavigationState.search {
                             HStack(spacing: 4) {
                                 Image(systemName: navController.selectedCategory.iconName)
                                     .font(ClipBoTypography.badge(scale: fontScale))
@@ -112,7 +112,7 @@ public struct QuickOverlayView: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 withAnimation(DesignTokens.Animations.pillSpring) {
-                                    navController.state = .categories
+                                    navController.state = QuickOverlayNavigationState.categories
                                 }
                             }
                             .padding(.trailing, 4)
@@ -125,10 +125,10 @@ public struct QuickOverlayView: View {
                                 categories: activeCategories,
                                 fontScale: fontScale,
                                 isCompact: isCompact,
-                                isCategoryFocused: navController.state == .categories,
+                                isCategoryFocused: navController.state == QuickOverlayNavigationState.categories,
                                 onCategorySelected: { _ in
                                     navController.selectedResultIndex = 0
-                                    navController.state = .search
+                                    navController.state = QuickOverlayNavigationState.search
                                     copyErrorMessage = nil
                                 }
                             )
@@ -236,7 +236,7 @@ public struct QuickOverlayView: View {
             copyErrorMessage = nil
         }
         .background(KeyboardEventHandler(
-            isCategoryFocused: navController.state == .categories,
+            isCategoryFocused: navController.state == QuickOverlayNavigationState.categories,
             onUpArrow: {
                 navController.handleUpArrow(totalResults: filteredClips.count)
                 copyErrorMessage = nil
@@ -289,7 +289,7 @@ public struct QuickOverlayView: View {
     }
 
     private func handleEnter() {
-        if navController.state == .categories {
+        if navController.state == QuickOverlayNavigationState.categories {
             withAnimation(DesignTokens.Animations.pillSpring) {
                 _ = navController.handleEnter()
             }
