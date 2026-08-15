@@ -198,17 +198,10 @@ public struct MenuBarClipRow: View {
         .onTapGesture(count: 1) {
             onSelect?(clip)
         }
-        .background(
-            Group {
-                if let imageStorage {
-                    ClipDragView(
-                        clip: clip,
-                        imageStorage: imageStorage,
-                        onDragCompleted: onDragCompleted
-                    )
-                }
-            }
-        )
+        .onDrag {
+            let storage = imageStorage ?? ImageStorage()
+            return ClipDragProvider.makeItemProvider(for: clip, imageStorage: storage) ?? NSItemProvider()
+        }
     }
 
     private func iconName(for type: ClipType) -> String {

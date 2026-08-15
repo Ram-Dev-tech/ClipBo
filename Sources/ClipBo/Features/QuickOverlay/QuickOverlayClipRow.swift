@@ -207,14 +207,10 @@ public struct QuickOverlayClipRow: View {
         .onTapGesture(count: 1) {
             onSelect(clip)
         }
-        // Native AppKit drag-and-drop overlay — threshold prevents accidental drags during clicks
-        .background(
-            ClipDragView(
-                clip: clip,
-                imageStorage: imageStorage,
-                onDragCompleted: onDragCompleted
-            )
-        )
+        // Native AppKit & SwiftUI drag-and-drop provider
+        .onDrag {
+            return ClipDragProvider.makeItemProvider(for: clip, imageStorage: imageStorage) ?? NSItemProvider()
+        }
         // Draggable cursor hint on hover
         .cursor(isHovered ? .openHand : .arrow)
     }

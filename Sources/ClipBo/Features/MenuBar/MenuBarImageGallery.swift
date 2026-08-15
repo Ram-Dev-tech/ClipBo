@@ -167,6 +167,9 @@ private struct MenuBarImageCell: View {
         .onTapGesture(count: 2) {
             triggerCopy()
         }
+        .onDrag {
+            return ClipDragProvider.makeItemProvider(for: clip, imageStorage: imageStorage) ?? NSItemProvider()
+        }
     }
 
     private func triggerCopy() {
