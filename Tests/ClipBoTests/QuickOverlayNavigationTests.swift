@@ -17,13 +17,10 @@ public struct QuickOverlayNavigationTests {
         print("    ▶ Testing Right arrow transition into categories...")
         controller.handleRightArrow(availableCategories: available)
         assert(controller.state == .categories, "Expected state .categories after right arrow")
-        assert(controller.selectedCategory == .all, "Expected selected category .all")
+        assert(controller.selectedCategory == .text, "Expected selected category .text after first right arrow from .all")
 
         // 3. Category cycling via Right arrow
         print("    ▶ Testing Category cycling via Right arrow...")
-        controller.handleRightArrow(availableCategories: available)
-        assert(controller.selectedCategory == .text, "Expected .text after right arrow")
-
         controller.handleRightArrow(availableCategories: available)
         assert(controller.selectedCategory == .star, "Expected .star after right arrow")
 
@@ -63,13 +60,12 @@ public struct QuickOverlayNavigationTests {
         controller.handleLeftArrow(availableCategories: available)
         assert(controller.selectedCategory == .all, "Expected .all after left arrow from .text")
 
-        // 5. First category + Left arrow returns to .search
-        print("    ▶ Testing First category + Left arrow returns to search...")
+        // Left arrow from .all wraps to .collections
         controller.handleLeftArrow(availableCategories: available)
-        assert(controller.state == .search, "Expected transition back to .search when pressing left arrow on first category")
-        print("      ✔ First category + Left arrow safely transitions back to search without closing")
+        assert(controller.selectedCategory == .collections, "Expected .collections after left arrow from .all")
+        print("      ✔ Category cycling via Left arrow with circular wrap-around verified")
 
-        // 6. Testing CustomCategoryItem list navigation (dynamic order + custom categories)
+        // 5. Testing CustomCategoryItem list navigation (dynamic order + custom categories)
         print("    ▶ Testing CustomCategoryItem list navigation with custom category...")
         let customCat = CustomCategoryItem(id: "custom_notes", title: "My Notes", iconName: "note.text")
         let dynamicCategories: [CustomCategoryItem] = [
@@ -82,9 +78,6 @@ public struct QuickOverlayNavigationTests {
         let dynamicController = QuickOverlayNavigationController(initialState: .search, initialCategoryId: "all")
         dynamicController.handleRightArrow(activeCategories: dynamicCategories)
         assert(dynamicController.state == .categories, "Expected transition to categories")
-        assert(dynamicController.selectedCategoryId == "all", "Expected 'all' selected")
-
-        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
         assert(dynamicController.selectedCategoryId == "code", "Expected 'code' selected next")
 
         dynamicController.handleRightArrow(activeCategories: dynamicCategories)
@@ -96,10 +89,6 @@ public struct QuickOverlayNavigationTests {
         // Wrap around to 'all'
         dynamicController.handleRightArrow(activeCategories: dynamicCategories)
         assert(dynamicController.selectedCategoryId == "all", "Expected wrap around to 'all'")
-
-        // Left arrow from 'all' returns to search
-        dynamicController.handleLeftArrow(activeCategories: dynamicCategories)
-        assert(dynamicController.state == .search, "Expected state .search after left from first item")
         print("      ✔ CustomCategoryItem dynamic navigation and custom category inclusion verified")
 
         // 7. Enter key behavior
