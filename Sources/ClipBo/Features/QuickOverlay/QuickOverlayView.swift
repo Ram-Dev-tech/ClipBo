@@ -236,6 +236,7 @@ public struct QuickOverlayView: View {
             copyErrorMessage = nil
         }
         .background(KeyboardEventHandler(
+            isCategoryFocused: navController.state == .categories,
             onUpArrow: {
                 navController.handleUpArrow(totalResults: filteredClips.count)
                 copyErrorMessage = nil
@@ -246,12 +247,12 @@ public struct QuickOverlayView: View {
             },
             onLeftArrow: {
                 withAnimation(DesignTokens.Animations.pillSpring) {
-                    navController.handleLeftArrow(availableCategories: activeClipCategories)
+                    navController.handleLeftArrow(activeCategories: activeCategories)
                 }
             },
             onRightArrow: {
                 withAnimation(DesignTokens.Animations.pillSpring) {
-                    navController.handleRightArrow(availableCategories: activeClipCategories)
+                    navController.handleRightArrow(activeCategories: activeCategories)
                 }
             },
             onEnter: {
@@ -340,10 +341,11 @@ public struct WindowDragHandle: NSViewRepresentable {
 // MARK: - Keyboard Event Handler
 
 /// AppKit local event monitor for reliable keyboard navigation in the Quick Overlay.
-/// Consumes arrow keys, Enter, and Escape to prevent routing to SwiftUI text field cursor.
-/// Left/Right arrows pass through when the search field has a non-empty text cursor position
-/// so normal text editing remains functional.
+/// Consumes arrow keys, Enter, and Escape to prevent routing conflicts with SwiftUI text field cursor.
+/// Left/Right arrows pass through when the search field has a non-empty text cursor position mid-text
+/// so normal text editing remains fully functional.
 private struct KeyboardEventHandler: NSViewRepresentable {
+    var isCategoryFocused: Bool
     var onUpArrow: () -> Void
     var onDownArrow: () -> Void
     var onLeftArrow: () -> Void
@@ -353,6 +355,7 @@ private struct KeyboardEventHandler: NSViewRepresentable {
 
     func makeNSView(context: Context) -> KeyView {
         let view = KeyView()
+        view.isCategoryFocused = isCategoryFocused
         view.onUpArrow = onUpArrow
         view.onDownArrow = onDownArrow
         view.onLeftArrow = onLeftArrow
@@ -363,6 +366,7 @@ private struct KeyboardEventHandler: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: KeyView, context: Context) {
+        nsView.isCategoryFocused = isCategoryFocused
         nsView.onUpArrow = onUpArrow
         nsView.onDownArrow = onDownArrow
         nsView.onLeftArrow = onLeftArrow
@@ -372,6 +376,7 @@ private struct KeyboardEventHandler: NSViewRepresentable {
     }
 
     class KeyView: NSView {
+        var isCategoryFocused: Bool = false
         var onUpArrow: (() -> Void)?
         var onDownArrow: (() -> Void)?
         var onLeftArrow: (() -> Void)?
@@ -384,7 +389,7 @@ private struct KeyboardEventHandler: NSViewRepresentable {
             super.viewDidMoveToWindow()
             if window != nil && monitor == nil {
                 monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-                    guard let self = self else { return event }
+                    guard let self = self, self.window != nil else { return event }
                     switch event.keyCode {
                     case 126: // Up arrow
                         self.onUpArrow?()
@@ -393,20 +398,31 @@ private struct KeyboardEventHandler: NSViewRepresentable {
                         self.onDownArrow?()
                         return nil
                     case 124: // Right arrow
-                        // Allow right arrow to pass when the text field cursor is mid-text
-                        if let firstResponder = self.window?.firstResponder as? NSTextView,
-                           let selection = firstResponder.selectedRanges.first as? NSRange,
-                           selection.location < (firstResponder.string.count) {
-                            return event // pass to text field for cursor movement
+                        if self.isCategoryFocused {
+                            self.onRightArrow?()
+                            return nil
+                        }
+                        // In search mode, check if text cursor is at the end of the text
+                        if let firstResponder = self.window?.firstResponder as? NSTextView {
+                            let selection = firstResponder.selectedRange()
+                            let textLen = (firstResponder.string as NSString).length
+                            if selection.location < textLen {
+                                return event // cursor in middle -> allow normal text cursor movement
+                            }
                         }
                         self.onRightArrow?()
                         return nil
                     case 123: // Left arrow
-                        // Allow left arrow to pass when cursor is not at start
-                        if let firstResponder = self.window?.firstResponder as? NSTextView,
-                           let selection = firstResponder.selectedRanges.first as? NSRange,
-                           selection.location > 0 {
-                            return event // pass to text field for cursor movement
+                        if self.isCategoryFocused {
+                            self.onLeftArrow?()
+                            return nil
+                        }
+                        // In search mode, check if text cursor is after start
+                        if let firstResponder = self.window?.firstResponder as? NSTextView {
+                            let selection = firstResponder.selectedRange()
+                            if selection.location > 0 {
+                                return event // cursor not at start -> allow normal text cursor movement
+                            }
                         }
                         self.onLeftArrow?()
                         return nil
