@@ -10,13 +10,15 @@ Icon
 # Xcode, VS Code & Swift Package Manager Build Artifacts
 .build/
 build/
-dist/
 DerivedData/
 .vscode/
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
 *.xcuserstate
 .swiftpm/xcode/
+
+# Temporary DMG Files
+dist/*_temp.dmg
 
 # Secrets, Environment & Credentials
 .env
@@ -44,7 +46,8 @@ secrets.json
 .system_generated/
 *.pid
 
-# Whitelist Source and Test Files
+# Whitelist Source, Test, Dist, and Script Files
 !Sources/**
 !Tests/**
 !scripts/**
+!dist/**
