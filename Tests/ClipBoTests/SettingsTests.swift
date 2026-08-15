@@ -33,8 +33,19 @@ public struct SettingsTests {
         _ = ClipBoTypography.caption(scale: FontScale.large.scaleFactor)
         print("      ✔ FontScale and dynamic typography calculations verified")
 
-        // 3. Test OverlayGeometry bounds and persistence (Phase 6D)
-        print("    ▶ Testing OverlayGeometry bounds & persistence...")
+        // 3. Test OverlaySizePreset & OverlayGeometry bounds and persistence
+        print("    ▶ Testing OverlaySizePreset and OverlayGeometry bounds & persistence...")
+        
+        // Verify all preset dimensions
+        assert(OverlaySizePreset.compact.width == 520 && OverlaySizePreset.compact.height == 300, "Compact preset must be 520 × 300")
+        assert(OverlaySizePreset.standard.width == 600 && OverlaySizePreset.standard.height == 380, "Standard preset must be 600 × 380")
+        assert(OverlaySizePreset.medium.width == 720 && OverlaySizePreset.medium.height == 460, "Medium preset must be 720 × 460")
+        assert(OverlaySizePreset.large.width == 850 && OverlaySizePreset.large.height == 560, "Large preset must be 850 × 560")
+        assert(OverlaySizePreset.maximum.width == 1000 && OverlaySizePreset.maximum.height == 700, "Maximum preset must be 1000 × 700")
+
+        // Verify default preset is standard
+        assert(AppSettings.default.defaultOverlaySizePreset == .standard, "Default overlay size preset must be .standard")
+
         let defaultGeo = OverlayGeometry.defaultGeometry
         assert(defaultGeo.width == 600, "Expected default width == 600")
         assert(defaultGeo.height == 380, "Expected default height == 380")
@@ -48,7 +59,7 @@ public struct SettingsTests {
         let hugeGeo = OverlayGeometry(width: 2500, height: 1800)
         assert(hugeGeo.width == OverlayGeometry.maxWidth, "Expected clamped maxWidth \(OverlayGeometry.maxWidth), got \(hugeGeo.width)")
         assert(hugeGeo.height == OverlayGeometry.maxHeight, "Expected clamped maxHeight \(OverlayGeometry.maxHeight), got \(hugeGeo.height)")
-        print("      ✔ OverlayGeometry min/max constraints verified")
+        print("      ✔ OverlaySizePreset mappings and hard bounds verified")
 
         // 4. Test SettingsService Initialization, Defaults & Adjustable Controls
         print("    ▶ Testing SettingsService defaults & persistence...")
@@ -66,12 +77,13 @@ public struct SettingsTests {
         assert(service.settings.allowURLMetadataFetching == false, "Expected default allowURLMetadataFetching == false")
         assert(service.settings.menuBarPanelShortcut == .defaultMenuBarPanel, "Expected default menuBarPanelShortcut == ⌘ ⇧ Space")
 
-        // Test Persistence of adjustable controls & OverlayGeometry
+        // Test Persistence of adjustable controls, presets & OverlayGeometry
         service.settings.maxClipCount = 500
         service.settings.maxHistoryAgeDays = 14
         service.settings.pollingInterval = 0.8
         service.settings.closeOverlayAfterCopy = false
         service.settings.fontScale = .large
+        service.settings.defaultOverlaySizePreset = .large
         service.updateOverlayGeometry(width: 680, height: 450, originX: 200, originY: 300)
         
         // Create second service instance reading from same UserDefaults
@@ -81,10 +93,29 @@ public struct SettingsTests {
         assert(service2.settings.pollingInterval == 0.8, "Expected persisted pollingInterval == 0.8")
         assert(service2.settings.closeOverlayAfterCopy == false, "Expected persisted closeOverlayAfterCopy == false")
         assert(service2.settings.fontScale == .large, "Expected persisted fontScale == .large")
+        assert(service2.settings.defaultOverlaySizePreset == .large, "Expected persisted defaultOverlaySizePreset == .large")
         assert(service2.settings.overlayGeometry.width == 680, "Expected persisted overlay width == 680")
         assert(service2.settings.overlayGeometry.height == 450, "Expected persisted overlay height == 450")
         assert(service2.settings.overlayGeometry.originX == 200, "Expected persisted overlay originX == 200")
         assert(service2.settings.overlayGeometry.originY == 300, "Expected persisted overlay originY == 300")
+
+        // Test dynamic reset using selected preset
+        service2.resetOverlayGeometry()
+        assert(service2.settings.overlayGeometry.width == 850, "Expected reset width to match Large preset (850)")
+        assert(service2.settings.overlayGeometry.height == 560, "Expected reset height to match Large preset (560)")
+        assert(service2.settings.overlayGeometry.originX == nil, "Expected originX cleared on reset")
+
+        // Change preset to Compact and reset again
+        service2.settings.defaultOverlaySizePreset = .compact
+        service2.resetOverlayGeometry()
+        assert(service2.settings.overlayGeometry.width == 520, "Expected reset width to match Compact preset (520)")
+        assert(service2.settings.overlayGeometry.height == 300, "Expected reset height to match Compact preset (300)")
+
+        // Custom resize persists across non-destructive operations
+        service2.updateOverlayGeometry(width: 734, height: 492, originX: 150, originY: 250)
+        assert(service2.settings.overlayGeometry.width == 734, "Custom width must be preserved")
+        assert(service2.settings.overlayGeometry.height == 492, "Custom height must be preserved")
+
         print("      ✔ Settings adjustable persistence & overlay geometry verified")
 
         // 5. Test Shortcut Validation & 3-Way Conflict Detection
