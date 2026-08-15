@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/app_icon.png" width="128" height="128" alt="ClipBo App Icon" />
+  <img src="docs/screenshots/app_icon.png" width="128" height="128" alt="ClipBo App Icon" />
 </p>
 
 <h1 align="center">ClipBo</h1>
@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_search.png" width="700" alt="ClipBo Spotlight-Style Quick Overlay" />
+  <img src="docs/screenshots/quick_overlay_search.png" width="700" alt="ClipBo Spotlight-Style Quick Overlay" />
 </p>
 
 ---
@@ -38,15 +38,10 @@
 
 Designed exclusively for macOS, ClipBo adopts Apple's Human Interface Guidelines with vibrant glassmorphism, native typography, dark/light theme support, and fluid micro-animations.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/menu_bar_panel_dark.png" width="48%" alt="Menu Bar Panel Dark" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/menu_bar_panel_light.png" width="48%" alt="Menu Bar Panel Light" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_dark.png" width="48%" alt="Quick Overlay Dark" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_light.png" width="48%" alt="Quick Overlay Light" />
-</p>
+| Dark Theme | Light Theme |
+|:---:|:---:|
+| <img src="docs/screenshots/menu_bar_panel_dark.png" width="400" alt="Menu Bar Panel Dark" /> | <img src="docs/screenshots/menu_bar_panel_light.png" width="400" alt="Menu Bar Panel Light" /> |
+| <img src="docs/screenshots/quick_overlay_dark.png" width="400" alt="Quick Overlay Dark" /> | <img src="docs/screenshots/quick_overlay_light.png" width="400" alt="Quick Overlay Light" /> |
 
 ---
 
@@ -63,10 +58,9 @@ ClipBo analyzes copied content locally using a deterministic rule engine—no cl
 | `"Meeting notes from sync with design team"` | `Text` | Standard plain text, rich text (RTF), and formatted snippets |
 | Raw PNG / JPEG / TIFF / File Promise | `Images` | High-performance thumbnailing and resolution extraction |
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_prompt.png" width="48%" alt="Prompt Classification" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_emoji.png" width="48%" alt="Emoji Classification" />
-</p>
+| Prompt Classification | Emoji Classification |
+|:---:|:---:|
+| <img src="docs/screenshots/quick_overlay_prompt.png" width="400" alt="Prompt Classification" /> | <img src="docs/screenshots/quick_overlay_emoji.png" width="400" alt="Emoji Classification" /> |
 
 > **Prompt vs. Code Arbitration**: When content contains both code and instruction phrases, ClipBo evaluates structural density vs. natural language intent to assign the most useful category.
 
@@ -83,7 +77,7 @@ ClipBo features a local search ranking engine that parses multi-token queries ac
 - `star prompt` — Shows your favorite prompts
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_categories.png" width="700" alt="Spotlight Category Search" />
+  <img src="docs/screenshots/quick_overlay_categories.png" width="700" alt="Spotlight Category Search" />
 </p>
 
 Relevance ranking prioritizes exact prefix matches, title matches, token matches, and recency **before** applying per-category display limits.
@@ -124,7 +118,7 @@ ClipBo organizes your clipboard history with built-in and customizable categorie
 In **Settings → Categories**, you can create custom categories, assign SF Symbols, reorder the circular navigation, and toggle categories on or off.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/category_settings_dark.png" width="700" alt="Category Settings" />
+  <img src="docs/screenshots/category_settings_dark.png" width="700" alt="Category Settings" />
 </p>
 
 ---
@@ -147,7 +141,7 @@ Images copied to the clipboard are stored locally in the application support dir
 - Native drag-and-drop support into Finder, Mail, Slack, Photoshop, and other apps.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/menu_bar_gallery_dark.png" width="450" alt="3-Column Image Gallery" />
+  <img src="docs/screenshots/menu_bar_gallery_dark.png" width="500" alt="3-Column Image Gallery" />
 </p>
 
 ---
@@ -180,10 +174,9 @@ Every clip row supports native macOS AppKit drag-and-drop sessions (`NSDraggingI
 
 Configure shortcuts, retention limits, typography scale, custom categories, and monitor real-time Accessibility permission health.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/settings_dark.png" width="48%" alt="Settings Panel" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/help_settings_dark.png" width="48%" alt="Runtime Status & Diagnostics" />
-</p>
+| Settings Panel | Help & Diagnostics |
+|:---:|:---:|
+| <img src="docs/screenshots/settings_dark.png" width="400" alt="Settings Panel" /> | <img src="docs/screenshots/help_settings_dark.png" width="400" alt="Runtime Status & Diagnostics" /> |
 
 ---
 
@@ -212,7 +205,7 @@ ClipBo works 100% offline. You can use search, classification, drag-and-drop, ca
 - **Orphan Image Pruning**: Deleted image clips automatically purge associated disk files to prevent storage bloat.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/storage_settings_dark.png" width="700" alt="Storage Settings" />
+  <img src="docs/screenshots/storage_settings_dark.png" width="700" alt="Storage Settings" />
 </p>
 
 ---
@@ -314,20 +307,17 @@ swift run ClipBoTests
 
 ## 📸 Complete Screenshot Gallery
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_dark.png" width="48%" alt="Quick Overlay Dark" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_light.png" width="48%" alt="Quick Overlay Light" />
-</p>
+| Quick Overlay (Dark) | Quick Overlay (Light) |
+|:---:|:---:|
+| <img src="docs/screenshots/quick_overlay_dark.png" width="400" alt="Quick Overlay Dark" /> | <img src="docs/screenshots/quick_overlay_light.png" width="400" alt="Quick Overlay Light" /> |
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_category_selected.png" width="48%" alt="Category Selected" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_min.png" width="48%" alt="Compact Overlay Size" />
-</p>
+| Category Selection | Compact Minimum Size |
+|:---:|:---:|
+| <img src="docs/screenshots/quick_overlay_category_selected.png" width="400" alt="Category Selected" /> | <img src="docs/screenshots/quick_overlay_min.png" width="400" alt="Compact Overlay Size" /> |
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/settings_light.png" width="48%" alt="Settings Light" />
-  <img src="https://raw.githubusercontent.com/Ram-Dev-tech/ClipBo/main/docs/screenshots/quick_overlay_large.png" width="48%" alt="Expanded Overlay Size" />
-</p>
+| Settings (Light Theme) | Expanded Maximum Size |
+|:---:|:---:|
+| <img src="docs/screenshots/settings_light.png" width="400" alt="Settings Light" /> | <img src="docs/screenshots/quick_overlay_large.png" width="400" alt="Expanded Overlay Size" /> |
 
 ---
 
