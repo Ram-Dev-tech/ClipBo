@@ -67,8 +67,14 @@ public final class SettingsService: ObservableObject {
     }
 
     public func resetOverlayGeometry() {
-        settings.overlayGeometry = .defaultGeometry
-        logger.info("Reset overlay geometry to default.")
+        let preset = settings.defaultOverlaySizePreset
+        settings.overlayGeometry = OverlayGeometry(
+            width: preset.width,
+            height: preset.height,
+            originX: nil,
+            originY: nil
+        )
+        logger.info("Reset overlay geometry to preset '\(preset.displayName)' (\(preset.dimensionsString)).")
     }
 
     // MARK: - Category Management

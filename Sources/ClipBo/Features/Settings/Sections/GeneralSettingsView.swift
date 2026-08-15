@@ -188,14 +188,35 @@ public struct GeneralSettingsView: View {
 
                 // 6. Quick Overlay Section
                 Section {
-                    sizeInfoRow(label: "Minimum Size", width: Int(OverlayGeometry.minWidth), height: Int(OverlayGeometry.minHeight))
+                    Picker("Default Size", selection: $settingsService.settings.defaultOverlaySizePreset) {
+                        ForEach(OverlaySizePreset.allCases) { preset in
+                            Text(preset.displayTitle).tag(preset)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
+                    if OverlaySizePreset.preset(for: settingsService.settings.overlayGeometry.width, height: settingsService.settings.overlayGeometry.height) == nil {
+                        HStack {
+                            Text("Current Custom Size")
+                                .font(ClipBoTypography.secondary)
+                                .foregroundStyle(Color.secondary)
+                            Spacer()
+                            Text("\(Int(settingsService.settings.overlayGeometry.width)) × \(Int(settingsService.settings.overlayGeometry.height))")
+                                .font(ClipBoTypography.mono(size: 11, weight: .medium))
+                                .foregroundStyle(Color.secondary)
+                        }
+                    }
+
                     Divider()
-                    sizeInfoRow(label: "Default Size", width: 600, height: 380)
-                    Divider()
-                    sizeInfoRow(label: "Maximum Size", width: Int(OverlayGeometry.maxWidth), height: Int(OverlayGeometry.maxHeight))
-                    Divider()
-                    HStack {
-                        Spacer()
+
+                    HStack(alignment: .center) {
+                        Text("The default size used when the overlay is reset or when 'Restore Overlay Defaults' is selected.")
+                            .font(ClipBoTypography.secondary)
+                            .foregroundStyle(Color.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Spacer(minLength: 12)
+
                         Button("Restore Overlay Defaults") {
                             settingsService.resetOverlayGeometry()
                         }
@@ -209,7 +230,7 @@ public struct GeneralSettingsView: View {
                         .font(ClipBoTypography.sectionTitle)
                         .foregroundStyle(Color.secondary)
                 } footer: {
-                    Text("The Quick Overlay supports dragging, edge/corner resizing, and position persistence across all connected displays. These bounds are fixed by design.")
+                    Text("The Quick Overlay supports continuous edge and corner resizing (Min: 520 × 300, Max: 1,000 × 700) and remembers its position across all connected displays.")
                         .font(ClipBoTypography.secondary)
                         .foregroundStyle(Color.secondary)
                 }
@@ -217,18 +238,6 @@ public struct GeneralSettingsView: View {
             .formStyle(.grouped)
             .padding(10)
         }
-    }
-
-    private func sizeInfoRow(label: String, width: Int, height: Int) -> some View {
-        HStack {
-            Text(label)
-                .font(ClipBoTypography.bodyMedium)
-            Spacer()
-            Text("\(width) × \(height)")
-                .font(ClipBoTypography.mono(size: 11, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-        }
-        .padding(.vertical, 1)
     }
 
     private func formatClipCount(_ count: Int) -> String {
