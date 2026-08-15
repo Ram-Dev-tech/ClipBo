@@ -11,50 +11,87 @@ public enum QuickOverlayNavigationState: Equatable, Sendable {
 /// Controller managing keyboard and state transitions for the Spotlight-style Quick Overlay.
 public final class QuickOverlayNavigationController: ObservableObject, @unchecked Sendable {
     @Published public var state: QuickOverlayNavigationState = .search
+    @Published public var selectedCategoryId: String = "all" {
+        didSet {
+            selectedCategory = ClipCategory(rawValue: selectedCategoryId) ?? .all
+        }
+    }
     @Published public var selectedCategory: ClipCategory = .all
     @Published public var selectedResultIndex: Int = 0
 
     public init(initialState: QuickOverlayNavigationState = .search, initialCategory: ClipCategory = .all) {
         self.state = initialState
         self.selectedCategory = initialCategory
+        self.selectedCategoryId = initialCategory.rawValue
     }
 
-    /// Handles right arrow navigation.
-    /// In search state: transitions into categories mode.
-    /// In categories state: advances to the next active category with wrap-around (last -> first).
-    public func handleRightArrow(availableCategories: [ClipCategory]) {
-        guard !availableCategories.isEmpty else { return }
+    public init(initialState: QuickOverlayNavigationState = .search, initialCategoryId: String = "all") {
+        self.state = initialState
+        self.selectedCategoryId = initialCategoryId
+        self.selectedCategory = ClipCategory(rawValue: initialCategoryId) ?? .all
+    }
+
+    // MARK: - Category Arrow Navigation (CustomCategoryItem)
+
+    /// Handles right arrow navigation using active CustomCategoryItems from SettingsService.
+    /// In search state: transitions into categories mode and focuses active category.
+    /// In categories state: advances to the next category with circular wrap-around (last -> first).
+    public func handleRightArrow(activeCategories: [CustomCategoryItem]) {
+        guard !activeCategories.isEmpty else { return }
         switch state {
         case .search:
             state = .categories
-            if !availableCategories.contains(selectedCategory), let first = availableCategories.first {
-                selectedCategory = first
+            if !activeCategories.contains(where: { $0.id == selectedCategoryId }), let first = activeCategories.first {
+                selectedCategoryId = first.id
             }
         case .categories:
-            selectedCategory = selectedCategory.next(in: availableCategories)
+            if let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId }) {
+                let nextIndex = (currentIndex + 1) % activeCategories.count
+                selectedCategoryId = activeCategories[nextIndex].id
+            } else if let first = activeCategories.first {
+                selectedCategoryId = first.id
+            }
         }
         selectedResultIndex = 0
     }
 
-    /// Handles left arrow navigation.
+    /// Handles left arrow navigation using active CustomCategoryItems from SettingsService.
     /// In search state: no-op (leaves cursor movement to search text field).
     /// In categories state: moves to previous category, or returns to search state if already at the first category.
-    public func handleLeftArrow(availableCategories: [ClipCategory]) {
-        guard !availableCategories.isEmpty else { return }
+    public func handleLeftArrow(activeCategories: [CustomCategoryItem]) {
+        guard !activeCategories.isEmpty else { return }
         switch state {
         case .search:
-            // Remain in search for cursor navigation
             break
         case .categories:
-            if let first = availableCategories.first, selectedCategory == first {
-                // If on the first category, return back to normal search state
-                state = .search
+            if let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId }) {
+                if currentIndex == 0 {
+                    // At first category, left arrow returns back to search state
+                    state = .search
+                } else {
+                    let prevIndex = currentIndex - 1
+                    selectedCategoryId = activeCategories[prevIndex].id
+                }
             } else {
-                selectedCategory = selectedCategory.previous(in: availableCategories)
+                state = .search
             }
         }
         selectedResultIndex = 0
     }
+
+    // MARK: - Backwards Compatibility with [ClipCategory]
+
+    public func handleRightArrow(availableCategories: [ClipCategory]) {
+        let customItems = availableCategories.map { CustomCategoryItem(id: $0.rawValue, title: $0.title, iconName: $0.iconName) }
+        handleRightArrow(activeCategories: customItems)
+    }
+
+    public func handleLeftArrow(availableCategories: [ClipCategory]) {
+        let customItems = availableCategories.map { CustomCategoryItem(id: $0.rawValue, title: $0.title, iconName: $0.iconName) }
+        handleLeftArrow(activeCategories: customItems)
+    }
+
+    // MARK: - Enter Key Handling
 
     /// Handles Enter key activation.
     /// In categories state: confirms category filter and returns to search/results view without copying.
@@ -70,6 +107,8 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
             return true // Trigger copy/restore on selected clip
         }
     }
+
+    // MARK: - Up / Down Result Navigation
 
     /// Handles down arrow navigation with circular wrap-around (last + ↓ → first).
     public func handleDownArrow(totalResults: Int) {
@@ -93,7 +132,14 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
 
     /// Selects a category directly and resets result index.
     public func selectCategory(_ category: ClipCategory) {
+        selectedCategoryId = category.rawValue
         selectedCategory = category
+        selectedResultIndex = 0
+    }
+
+    /// Selects a custom category item directly and resets result index.
+    public func selectCategoryItem(_ item: CustomCategoryItem) {
+        selectedCategoryId = item.id
         selectedResultIndex = 0
     }
 
