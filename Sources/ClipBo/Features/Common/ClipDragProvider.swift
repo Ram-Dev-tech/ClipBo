@@ -55,7 +55,7 @@ public struct ClipDragProvider {
             // 1. Native URL representation
             if let url = URL(string: urlString) {
                 provider.registerItem(forTypeIdentifier: UTType.url.identifier) { (completion, _, _) in
-                    completion(url as NSURL, nil)
+                    completion?(url as NSURL, nil)
                 }
                 provider.registerObject(url as NSURL, visibility: .all)
             }
@@ -104,7 +104,7 @@ public struct ClipDragProvider {
             // 4. File URL representation for Finder / file-upload drop zones
             if let tempFileURL = createTemporaryImageFile(data: pngData, clipId: clip.id) {
                 provider.registerItem(forTypeIdentifier: UTType.fileURL.identifier) { (completion, _, _) in
-                    completion(tempFileURL as NSURL, nil)
+                    completion?(tempFileURL as NSURL, nil)
                 }
             }
 
