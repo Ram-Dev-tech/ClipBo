@@ -2,22 +2,16 @@
   <img src="docs/screenshots/app_icon.png" width="128" height="128" alt="ClipBo App Icon" />
 </p>
 
-<h1 align="center">ClipBo</h1>
+# ClipBo
 
-<p align="center">
-  <strong>A fast, private, offline-first clipboard manager for macOS.</strong>
-</p>
+> A fast, private, offline-first clipboard manager for macOS.
 
-<p align="center">
-  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/platform-macOS%2014.0%2B-blue.svg?style=flat-square&logo=apple" alt="macOS 14+" /></a>
-  <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-5.9%2B-orange.svg?style=flat-square&logo=swift" alt="Swift 5.9+" /></a>
-  <img src="https://img.shields.io/badge/Privacy-100%25%20Local-success.svg?style=flat-square" alt="100% Local" />
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square" alt="MIT License" /></a>
-</p>
+[![macOS](https://img.shields.io/badge/platform-macOS%2014.0%2B-blue.svg?style=flat-square&logo=apple)](https://www.apple.com/macos/)
+[![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange.svg?style=flat-square&logo=swift)](https://swift.org)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-success.svg?style=flat-square)](docs/screenshots/)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat-square)](LICENSE)
 
-<p align="center">
-  <img src="docs/screenshots/quick_overlay_search.png" width="700" alt="ClipBo Spotlight-Style Quick Overlay" />
-</p>
+![ClipBo Quick Overlay Search](docs/screenshots/quick_overlay_search.png)
 
 ---
 
@@ -40,8 +34,8 @@ Designed exclusively for macOS, ClipBo adopts Apple's Human Interface Guidelines
 
 | Dark Theme | Light Theme |
 |:---:|:---:|
-| <img src="docs/screenshots/menu_bar_panel_dark.png" width="400" alt="Menu Bar Panel Dark" /> | <img src="docs/screenshots/menu_bar_panel_light.png" width="400" alt="Menu Bar Panel Light" /> |
-| <img src="docs/screenshots/quick_overlay_dark.png" width="400" alt="Quick Overlay Dark" /> | <img src="docs/screenshots/quick_overlay_light.png" width="400" alt="Quick Overlay Light" /> |
+| ![Menu Bar Panel Dark](docs/screenshots/menu_bar_panel_dark.png) | ![Menu Bar Panel Light](docs/screenshots/menu_bar_panel_light.png) |
+| ![Quick Overlay Dark](docs/screenshots/quick_overlay_dark.png) | ![Quick Overlay Light](docs/screenshots/quick_overlay_light.png) |
 
 ---
 
@@ -60,7 +54,7 @@ ClipBo analyzes copied content locally using a deterministic rule engine—no cl
 
 | Prompt Classification | Emoji Classification |
 |:---:|:---:|
-| <img src="docs/screenshots/quick_overlay_prompt.png" width="400" alt="Prompt Classification" /> | <img src="docs/screenshots/quick_overlay_emoji.png" width="400" alt="Emoji Classification" /> |
+| ![Prompt Classification](docs/screenshots/quick_overlay_prompt.png) | ![Emoji Classification](docs/screenshots/quick_overlay_emoji.png) |
 
 > **Prompt vs. Code Arbitration**: When content contains both code and instruction phrases, ClipBo evaluates structural density vs. natural language intent to assign the most useful category.
 
@@ -76,9 +70,7 @@ ClipBo features a local search ranking engine that parses multi-token queries ac
 - `url github` — Finds GitHub URLs
 - `star prompt` — Shows your favorite prompts
 
-<p align="center">
-  <img src="docs/screenshots/quick_overlay_categories.png" width="700" alt="Spotlight Category Search" />
-</p>
+![Spotlight Category Search](docs/screenshots/quick_overlay_categories.png)
 
 Relevance ranking prioritizes exact prefix matches, title matches, token matches, and recency **before** applying per-category display limits.
 
@@ -117,9 +109,7 @@ ClipBo organizes your clipboard history with built-in and customizable categorie
 ### Custom Categories
 In **Settings → Categories**, you can create custom categories, assign SF Symbols, reorder the circular navigation, and toggle categories on or off.
 
-<p align="center">
-  <img src="docs/screenshots/category_settings_dark.png" width="700" alt="Category Settings" />
-</p>
+![Category Settings](docs/screenshots/category_settings_dark.png)
 
 ---
 
@@ -176,7 +166,7 @@ Configure shortcuts, retention limits, typography scale, custom categories, and 
 
 | Settings Panel | Help & Diagnostics |
 |:---:|:---:|
-| <img src="docs/screenshots/settings_dark.png" width="400" alt="Settings Panel" /> | <img src="docs/screenshots/help_settings_dark.png" width="400" alt="Runtime Status & Diagnostics" /> |
+| ![Settings Panel](docs/screenshots/settings_dark.png) | ![Runtime Diagnostics](docs/screenshots/help_settings_dark.png) |
 
 ---
 
@@ -204,9 +194,7 @@ ClipBo works 100% offline. You can use search, classification, drag-and-drop, ca
 - **Starred Protection**: Starred/favorite clips are never automatically pruned.
 - **Orphan Image Pruning**: Deleted image clips automatically purge associated disk files to prevent storage bloat.
 
-<p align="center">
-  <img src="docs/screenshots/storage_settings_dark.png" width="700" alt="Storage Settings" />
-</p>
+![Storage Settings](docs/screenshots/storage_settings_dark.png)
 
 ---
 
@@ -309,15 +297,15 @@ swift run ClipBoTests
 
 | Quick Overlay (Dark) | Quick Overlay (Light) |
 |:---:|:---:|
-| <img src="docs/screenshots/quick_overlay_dark.png" width="400" alt="Quick Overlay Dark" /> | <img src="docs/screenshots/quick_overlay_light.png" width="400" alt="Quick Overlay Light" /> |
+| ![Quick Overlay Dark](docs/screenshots/quick_overlay_dark.png) | ![Quick Overlay Light](docs/screenshots/quick_overlay_light.png) |
 
 | Category Selection | Compact Minimum Size |
 |:---:|:---:|
-| <img src="docs/screenshots/quick_overlay_category_selected.png" width="400" alt="Category Selected" /> | <img src="docs/screenshots/quick_overlay_min.png" width="400" alt="Compact Overlay Size" /> |
+| ![Category Selected](docs/screenshots/quick_overlay_category_selected.png) | ![Compact Overlay Size](docs/screenshots/quick_overlay_min.png) |
 
 | Settings (Light Theme) | Expanded Maximum Size |
 |:---:|:---:|
-| <img src="docs/screenshots/settings_light.png" width="400" alt="Settings Light" /> | <img src="docs/screenshots/quick_overlay_large.png" width="400" alt="Expanded Overlay Size" /> |
+| ![Settings Light](docs/screenshots/settings_light.png) | ![Expanded Overlay Size](docs/screenshots/quick_overlay_large.png) |
 
 ---
 
