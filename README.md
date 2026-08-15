@@ -1,5 +1,7 @@
 # ClipBo
 
+> Native macOS Clipboard Manager with Spotlight-Style Overlay & Background Selection Capture.
+
 **ClipBo** is a private, native macOS clipboard manager built with Swift and SwiftUI for macOS 14+.
 
 ## Features

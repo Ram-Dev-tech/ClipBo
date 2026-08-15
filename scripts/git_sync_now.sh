@@ -31,7 +31,7 @@ if [ -n "$SECRET_MATCHES" ]; then
 fi
 
 # 2. Stage safe files
-git add .gitignore Package.swift Sources Tests scripts 2>/dev/null || git add -A
+git add -A
 
 # 3. Check if there are staged changes
 if git diff --cached --quiet; then
