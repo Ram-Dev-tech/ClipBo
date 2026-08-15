@@ -120,6 +120,61 @@ public struct CustomCategoryItem: Codable, Identifiable, Hashable, Equatable, Se
     ]
 }
 
+/// Predefined size presets for the Quick Overlay default size setting.
+public enum OverlaySizePreset: String, Codable, CaseIterable, Identifiable, Sendable {
+    case compact
+    case standard
+    case medium
+    case large
+    case maximum
+
+    public var id: String { rawValue }
+
+    public var displayName: String {
+        switch self {
+        case .compact: return "Compact"
+        case .standard: return "Default"
+        case .medium: return "Medium"
+        case .large: return "Large"
+        case .maximum: return "Maximum"
+        }
+    }
+
+    public var width: Double {
+        switch self {
+        case .compact: return 520
+        case .standard: return 600
+        case .medium: return 720
+        case .large: return 850
+        case .maximum: return 1000
+        }
+    }
+
+    public var height: Double {
+        switch self {
+        case .compact: return 300
+        case .standard: return 380
+        case .medium: return 460
+        case .large: return 560
+        case .maximum: return 700
+        }
+    }
+
+    public var dimensionsString: String {
+        "\(Int(width)) × \(Int(height))"
+    }
+
+    public var displayTitle: String {
+        "\(displayName) — \(dimensionsString)"
+    }
+
+    public static func preset(for width: Double, height: Double) -> OverlaySizePreset? {
+        let roundedW = round(width)
+        let roundedH = round(height)
+        return allCases.first { abs($0.width - roundedW) < 1 && abs($0.height - roundedH) < 1 }
+    }
+}
+
 /// Geometry and position model for Quick Overlay resizing and multi-display position persistence.
 public struct OverlayGeometry: Codable, Equatable, Sendable {
     public var width: Double
@@ -142,6 +197,15 @@ public struct OverlayGeometry: Codable, Equatable, Sendable {
         self.height = min(max(height, Self.minHeight), Self.maxHeight)
         self.originX = originX
         self.originY = originY
+    }
+
+    public static func defaultGeometry(for preset: OverlaySizePreset = .standard) -> OverlayGeometry {
+        OverlayGeometry(
+            width: preset.width,
+            height: preset.height,
+            originX: nil,
+            originY: nil
+        )
     }
 
     public static let defaultGeometry = OverlayGeometry(
@@ -173,6 +237,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var customCategories: [CustomCategoryItem]
     public var disabledCategoryIds: [String]
     public var overlayGeometry: OverlayGeometry
+    public var defaultOverlaySizePreset: OverlaySizePreset
 
     // Legacy retention property support
     public var retention: HistoryRetention {
@@ -203,7 +268,8 @@ public struct AppSettings: Codable, Equatable, Sendable {
         categoryOrder: [String] = ["all", "text", "star", "code", "url", "images", "emoji", "collections"],
         customCategories: [CustomCategoryItem] = [],
         disabledCategoryIds: [String] = [],
-        overlayGeometry: OverlayGeometry = .defaultGeometry
+        overlayGeometry: OverlayGeometry = .defaultGeometry,
+        defaultOverlaySizePreset: OverlaySizePreset = .standard
     ) {
         self.launchAtLogin = launchAtLogin
         self.isMonitoring = isMonitoring
@@ -224,6 +290,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.customCategories = customCategories
         self.disabledCategoryIds = disabledCategoryIds
         self.overlayGeometry = overlayGeometry
+        self.defaultOverlaySizePreset = defaultOverlaySizePreset
     }
 
     public init(from decoder: Decoder) throws {
@@ -247,6 +314,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
         self.customCategories = try container.decodeIfPresent([CustomCategoryItem].self, forKey: .customCategories) ?? []
         self.disabledCategoryIds = try container.decodeIfPresent([String].self, forKey: .disabledCategoryIds) ?? []
         self.overlayGeometry = try container.decodeIfPresent(OverlayGeometry.self, forKey: .overlayGeometry) ?? .defaultGeometry
+        self.defaultOverlaySizePreset = try container.decodeIfPresent(OverlaySizePreset.self, forKey: .defaultOverlaySizePreset) ?? .standard
     }
 
     public static var `default`: AppSettings {
