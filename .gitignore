@@ -7,10 +7,11 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# Xcode & Swift Package Manager Build Artifacts
+# Xcode, VS Code & Swift Package Manager Build Artifacts
 .build/
 build/
 DerivedData/
+.vscode/
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
 *.xcuserstate
@@ -32,7 +33,7 @@ secrets.json
 *credential*
 *token*
 
-# Temporary Files & Crash Logs
+# Temporary Files, Logs & PID
 *.swp
 *.swo
 *~
@@ -40,3 +41,4 @@ secrets.json
 *.tmp
 *.bak
 .system_generated/
+*.pid
