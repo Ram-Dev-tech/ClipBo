@@ -21,7 +21,11 @@
 
 ### Latest Release (v0.6.4)
 
-**[Download ClipBo.dmg for macOS (Apple Silicon)](https://github.com/Ram-Dev-tech/ClipBo/releases/download/v0.6.4/ClipBo.dmg)**
+| Download Option | Link | File Size | Description |
+| :--- | :--- | :--- | :--- |
+| **Direct Download (DMG)** | **[Download ClipBo.dmg](https://github.com/Ram-Dev-tech/ClipBo/raw/main/dist/ClipBo.dmg)** | `2.6 MB` | Direct download from repository `dist/` |
+| **GitHub Releases** | **[ClipBo.dmg (v0.6.4)](https://github.com/Ram-Dev-tech/ClipBo/releases/download/v0.6.4/ClipBo.dmg)** | `2.6 MB` | Official GitHub Release binary |
+| **Browse Releases Folder** | **[Browse `dist/` Directory](dist/)** | — | View all release disk images in repository |
 
 - **Format**: Standalone drag-to-install Apple Disk Image (`.dmg`)
 - **System Requirements**: macOS 14.0 (Sonoma) or later (compatible with macOS 13+)
