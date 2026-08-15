@@ -8,12 +8,15 @@ cd "$REPO_ROOT"
 PID_FILE="$REPO_ROOT/.git/auto_sync.pid"
 LOG_FILE="$REPO_ROOT/.git/auto_sync.log"
 SYNC_SCRIPT="$REPO_ROOT/scripts/git_sync_now.sh"
-DEBOUNCE_SECONDS=8
+DEBOUNCE_SECONDS=6
 
-get_repo_signature() {
-    # Generates a fast fingerprint of tracked and safe source directories
-    find Sources Tests scripts Package.swift .gitignore -type f -not -name ".*" -not -path "*/.*" -exec stat -f "%m %N" {} + 2>/dev/null | sort | md5 2>/dev/null || \
-    find Sources Tests scripts Package.swift .gitignore -type f -not -name ".*" -not -path "*/.*" 2>/dev/null | sort | md5 2>/dev/null
+get_status_hash() {
+    # Returns md5 hash of porcelain status
+    git status --porcelain 2>/dev/null | md5
+}
+
+is_working_tree_dirty() {
+    [ -n "$(git status --porcelain 2>/dev/null)" ]
 }
 
 run_watcher() {
@@ -24,28 +27,22 @@ run_watcher() {
     echo "   Log file:   $LOG_FILE"
     echo "=================================================="
 
-    local last_sig=""
-    last_sig=$(get_repo_signature)
-
     while true; do
-        sleep 2
-        local current_sig=""
-        current_sig=$(get_repo_signature)
+        if is_working_tree_dirty; then
+            local start_hash
+            start_hash=$(get_status_hash)
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Uncommitted changes detected. Debouncing ${DEBOUNCE_SECONDS}s..."
 
-        if [ "$current_sig" != "$last_sig" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Changes detected. Waiting ${DEBOUNCE_SECONDS}s for changes to settle..."
-            
-            # Debounce loop: wait until no further changes occur for DEBOUNCE_SECONDS
             local settled=false
             while [ "$settled" = false ]; do
                 sleep "$DEBOUNCE_SECONDS"
-                local new_sig=""
-                new_sig=$(get_repo_signature)
-                if [ "$new_sig" = "$current_sig" ]; then
+                local new_hash
+                new_hash=$(get_status_hash)
+                if [ "$new_hash" = "$start_hash" ]; then
                     settled=true
                 else
-                    current_sig="$new_sig"
-                    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ Additional changes detected. Resetting debounce timer..."
+                    start_hash="$new_hash"
+                    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ⏳ Active edits continuing. Resetting debounce timer..."
                 fi
             done
 
@@ -55,10 +52,9 @@ run_watcher() {
             else
                 bash "$SYNC_SCRIPT"
             fi
-            
-            last_sig=$(get_repo_signature)
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 👁️  Resuming continuous watch..."
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 👁️  Continuous watch active."
         fi
+        sleep 2
     done
 }
 
@@ -119,8 +115,8 @@ case "$1" in
 
         if [ -f "$LOG_FILE" ]; then
             echo ""
-            echo "--- Recent Activity (last 10 lines) ---"
-            tail -n 10 "$LOG_FILE"
+            echo "--- Recent Activity (last 15 lines) ---"
+            tail -n 15 "$LOG_FILE"
         fi
         ;;
 
