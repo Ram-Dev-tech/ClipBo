@@ -122,11 +122,14 @@ public struct QuickOverlayView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             QuickOverlayCategoryRow(
                                 selectedCategory: $navController.selectedCategory,
+                                selectedCategoryId: navController.selectedCategoryId,
                                 categories: activeCategories,
                                 fontScale: fontScale,
                                 isCompact: isCompact,
                                 isCategoryFocused: navController.state == QuickOverlayNavigationState.categories,
-                                onCategorySelected: { _ in
+                                onCategorySelected: { clipCat in
+                                    navController.selectedCategory = clipCat
+                                    navController.selectedCategoryId = clipCat.rawValue
                                     navController.selectedResultIndex = 0
                                     navController.state = QuickOverlayNavigationState.search
                                     copyErrorMessage = nil
