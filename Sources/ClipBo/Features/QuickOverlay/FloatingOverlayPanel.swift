@@ -5,6 +5,16 @@ import SwiftUI
 public final class FloatingOverlayPanel: NSPanel, NSWindowDelegate {
     public var onDismiss: (() -> Void)?
     public var onGeometryChanged: ((NSRect) -> Void)?
+    public var onKeyDown: ((NSEvent) -> Bool)?
+
+    public override func sendEvent(_ event: NSEvent) {
+        if event.type == .keyDown {
+            if let onKeyDown, onKeyDown(event) {
+                return // Event consumed by Quick Overlay navigation
+            }
+        }
+        super.sendEvent(event)
+    }
 
     public init(contentRect: NSRect) {
         super.init(

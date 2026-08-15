@@ -11,11 +11,7 @@ public enum QuickOverlayNavigationState: Equatable, Sendable {
 /// Controller managing keyboard and state transitions for the Spotlight-style Quick Overlay.
 public final class QuickOverlayNavigationController: ObservableObject, @unchecked Sendable {
     @Published public var state: QuickOverlayNavigationState = .search
-    @Published public var selectedCategoryId: String = "all" {
-        didSet {
-            selectedCategory = ClipCategory(rawValue: selectedCategoryId) ?? .all
-        }
-    }
+    @Published public var selectedCategoryId: String = "all"
     @Published public var selectedCategory: ClipCategory = .all
     @Published public var selectedResultIndex: Int = 0
 
@@ -40,49 +36,34 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
     // MARK: - Category Arrow Navigation (CustomCategoryItem)
 
     /// Handles right arrow navigation using active CustomCategoryItems from SettingsService.
-    /// In search state: transitions into categories mode and focuses active category.
+    /// In search state: transitions into categories mode and advances to the next active category.
     /// In categories state: advances to the next category with circular wrap-around (last -> first).
     public func handleRightArrow(activeCategories: [CustomCategoryItem]) {
         guard !activeCategories.isEmpty else { return }
-        switch state {
-        case .search:
-            state = .categories
-            if !activeCategories.contains(where: { $0.id == selectedCategoryId }), let first = activeCategories.first {
-                selectedCategoryId = first.id
-            }
-        case .categories:
-            if let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId }) {
-                let nextIndex = (currentIndex + 1) % activeCategories.count
-                selectedCategoryId = activeCategories[nextIndex].id
-            } else if let first = activeCategories.first {
-                selectedCategoryId = first.id
-            }
-        }
-        selectedResultIndex = 0
+        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId || $0.id == selectedCategory.rawValue }) ?? 0
+        let nextIndex = (currentIndex + 1) % activeCategories.count
+        let nextItem = activeCategories[nextIndex]
+        let nextCat = ClipCategory(rawValue: nextItem.id) ?? .all
+
+        self.state = .categories
+        self.selectedCategoryId = nextItem.id
+        self.selectedCategory = nextCat
+        self.selectedResultIndex = 0
     }
 
     /// Handles left arrow navigation using active CustomCategoryItems from SettingsService.
-    /// In search state: no-op (leaves cursor movement to search text field).
-    /// In categories state: moves to previous category, or returns to search state if already at the first category.
+    /// In search state or categories state: moves to previous category with circular wrap-around.
     public func handleLeftArrow(activeCategories: [CustomCategoryItem]) {
         guard !activeCategories.isEmpty else { return }
-        switch state {
-        case .search:
-            break
-        case .categories:
-            if let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId }) {
-                if currentIndex == 0 {
-                    // At first category, left arrow returns back to search state
-                    state = .search
-                } else {
-                    let prevIndex = currentIndex - 1
-                    selectedCategoryId = activeCategories[prevIndex].id
-                }
-            } else {
-                state = .search
-            }
-        }
-        selectedResultIndex = 0
+        let currentIndex = activeCategories.firstIndex(where: { $0.id == selectedCategoryId || $0.id == selectedCategory.rawValue }) ?? 0
+        let prevIndex = (currentIndex - 1 + activeCategories.count) % activeCategories.count
+        let prevItem = activeCategories[prevIndex]
+        let prevCat = ClipCategory(rawValue: prevItem.id) ?? .all
+
+        self.state = .categories
+        self.selectedCategoryId = prevItem.id
+        self.selectedCategory = prevCat
+        self.selectedResultIndex = 0
     }
 
     // MARK: - Backwards Compatibility with [ClipCategory]
@@ -146,6 +127,7 @@ public final class QuickOverlayNavigationController: ObservableObject, @unchecke
     /// Selects a custom category item directly and resets result index.
     public func selectCategoryItem(_ item: CustomCategoryItem) {
         selectedCategoryId = item.id
+        selectedCategory = ClipCategory(rawValue: item.id) ?? .all
         selectedResultIndex = 0
     }
 

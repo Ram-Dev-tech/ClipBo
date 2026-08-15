@@ -4,6 +4,7 @@ import SwiftUI
 /// Always visible in the header regardless of navigation state.
 public struct QuickOverlayCategoryRow: View {
     @Binding public var selectedCategory: ClipCategory
+    public var selectedCategoryId: String?
     public var categories: [CustomCategoryItem]
     public var fontScale: Double
     /// When true, uses smaller circles and tighter spacing to fit narrow windows.
@@ -14,6 +15,7 @@ public struct QuickOverlayCategoryRow: View {
 
     public init(
         selectedCategory: Binding<ClipCategory>,
+        selectedCategoryId: String? = nil,
         categories: [CustomCategoryItem] = CustomCategoryItem.defaultBuiltInCategories,
         fontScale: Double = 1.0,
         isCompact: Bool = false,
@@ -21,6 +23,7 @@ public struct QuickOverlayCategoryRow: View {
         onCategorySelected: ((ClipCategory) -> Void)? = nil
     ) {
         self._selectedCategory = selectedCategory
+        self.selectedCategoryId = selectedCategoryId
         self.categories = categories
         self.fontScale = fontScale
         self.isCompact = isCompact
@@ -36,7 +39,7 @@ public struct QuickOverlayCategoryRow: View {
         HStack(spacing: spacing) {
             ForEach(categories) { catItem in
                 let clipCat = ClipCategory(rawValue: catItem.id) ?? .all
-                let isSelected = selectedCategory == clipCat
+                let isSelected = (selectedCategory == clipCat) || (selectedCategoryId == catItem.id)
 
                 CircularCategoryButton(
                     item: catItem,
