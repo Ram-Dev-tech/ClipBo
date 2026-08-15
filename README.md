@@ -195,12 +195,34 @@ ClipBo works 100% offline. You can use search, classification, drag-and-drop, ca
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Setup
 
-1. Download the latest `ClipBo.app` release from [GitHub Releases](https://github.com/Ram-Dev-tech/ClipBo/releases).
-2. Move `ClipBo.app` into your `/Applications` folder.
-3. Launch `ClipBo` from Spotlight or Applications.
-4. *(Optional for Quick Capture)*: When prompted, enable Accessibility permission in **System Settings → Privacy & Security → Accessibility → ClipBo**.
+You can install and launch ClipBo directly using Terminal:
+
+### One-Line Quick Install & Launch
+```bash
+git clone https://github.com/Ram-Dev-tech/ClipBo.git && cd ClipBo && ./scripts/build_app.sh && cp -R build/ClipBo.app /Applications/ && open /Applications/ClipBo.app
+```
+
+### Step-by-Step Installation
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Ram-Dev-tech/ClipBo.git
+   cd ClipBo
+   ```
+2. **Build & Assemble Application Bundle**:
+   ```bash
+   ./scripts/build_app.sh
+   ```
+3. **Move to Applications Folder**:
+   ```bash
+   cp -R build/ClipBo.app /Applications/
+   ```
+4. **Launch ClipBo**:
+   ```bash
+   open /Applications/ClipBo.app
+   ```
+5. *(Optional for Quick Capture)*: Enable Accessibility permission in **System Settings → Privacy & Security → Accessibility → ClipBo** (required only for `⌥⌘C` and `⌘+Select` background capture).
 
 ---
 
