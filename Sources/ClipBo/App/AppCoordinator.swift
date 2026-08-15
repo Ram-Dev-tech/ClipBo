@@ -222,8 +222,7 @@ public final class AppCoordinator: ObservableObject {
         captureHUD.show(state: .arming(shortcut: shortcutDisplay))
 
         guard selectionCaptureService.isAccessibilityGranted else {
-            selectionCaptureService.requestAccessibilityPermission()
-            captureHUD.transition(to: .accessibilityRequired, autoDismissAfter: 4.0)
+            captureHUD.transition(to: .accessibilityRequired, autoDismissAfter: 3.0)
             logger.warning("Quick Capture: Accessibility permission not granted")
             return
         }
