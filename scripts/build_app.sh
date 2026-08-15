@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
 echo "🔨 Building ClipBo in release mode..."
 swift build -c release --product ClipBoApp
 
@@ -16,6 +19,16 @@ mkdir -p "$RESOURCES_DIR"
 BIN_PATH=$(swift build -c release --show-bin-path)/ClipBoApp
 cp "$BIN_PATH" "$MACOS_DIR/ClipBo"
 
+# 1. Ensure AppIcon.icns exists
+if [ ! -f "Resources/AppIcon.icns" ]; then
+    echo "🎨 AppIcon.icns not found. Generating macOS AppIcon assets..."
+    swift scripts/generate_icon.swift
+fi
+
+# 2. Copy AppIcon into Resources
+cp "Resources/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
+
+# 3. Create Info.plist with AppIcon configuration
 cat << 'EOF' > "$APP_DIR/Contents/Info.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -35,6 +48,10 @@ cat << 'EOF' > "$APP_DIR/Contents/Info.plist"
     <string>1.0.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>LSMinimumSystemVersion</key>
     <string>14.0</string>
     <key>LSUIElement</key>
