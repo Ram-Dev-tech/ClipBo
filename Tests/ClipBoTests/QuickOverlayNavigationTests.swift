@@ -53,6 +53,7 @@ public struct QuickOverlayNavigationTests {
         // 4. Category cycling via Left arrow
         print("    ▶ Testing Category cycling via Left arrow...")
         controller.selectedCategory = .code
+        controller.selectedCategoryId = "code"
         controller.handleLeftArrow(availableCategories: available)
         assert(controller.selectedCategory == .star, "Expected .star after left arrow from .code")
 
@@ -68,7 +69,40 @@ public struct QuickOverlayNavigationTests {
         assert(controller.state == .search, "Expected transition back to .search when pressing left arrow on first category")
         print("      ✔ First category + Left arrow safely transitions back to search without closing")
 
-        // 6. Enter key behavior
+        // 6. Testing CustomCategoryItem list navigation (dynamic order + custom categories)
+        print("    ▶ Testing CustomCategoryItem list navigation with custom category...")
+        let customCat = CustomCategoryItem(id: "custom_notes", title: "My Notes", iconName: "note.text")
+        let dynamicCategories: [CustomCategoryItem] = [
+            CustomCategoryItem(id: "all", title: "All", iconName: "square.grid.2x2"),
+            CustomCategoryItem(id: "code", title: "<> Code", iconName: "chevron.left.forwardslash.chevron.right"),
+            customCat,
+            CustomCategoryItem(id: "url", title: "URL", iconName: "link")
+        ]
+
+        let dynamicController = QuickOverlayNavigationController(initialState: .search, initialCategoryId: "all")
+        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.state == .categories, "Expected transition to categories")
+        assert(dynamicController.selectedCategoryId == "all", "Expected 'all' selected")
+
+        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.selectedCategoryId == "code", "Expected 'code' selected next")
+
+        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.selectedCategoryId == "custom_notes", "Expected custom category 'custom_notes' selected")
+
+        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.selectedCategoryId == "url", "Expected 'url' selected")
+
+        // Wrap around to 'all'
+        dynamicController.handleRightArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.selectedCategoryId == "all", "Expected wrap around to 'all'")
+
+        // Left arrow from 'all' returns to search
+        dynamicController.handleLeftArrow(activeCategories: dynamicCategories)
+        assert(dynamicController.state == .search, "Expected state .search after left from first item")
+        print("      ✔ CustomCategoryItem dynamic navigation and custom category inclusion verified")
+
+        // 7. Enter key behavior
         print("    ▶ Testing Enter key behavior in categories vs search...")
         controller.state = .categories
         controller.selectedCategory = .prompt
@@ -81,7 +115,7 @@ public struct QuickOverlayNavigationTests {
         assert(shouldCopyFromSearch, "Enter in .search should return true to trigger clip copy/restore")
         print("      ✔ Enter key differentiation between category selection and clip copy verified")
 
-        // 7. Up / Down arrow result navigation with circular wrap-around
+        // 8. Up / Down arrow result navigation with circular wrap-around
         print("    ▶ Testing Up / Down arrow result navigation with wrap-around...")
         controller.selectedResultIndex = 0
         controller.handleDownArrow(totalResults: 3)
@@ -111,7 +145,7 @@ public struct QuickOverlayNavigationTests {
         assert(controller.selectedResultIndex == 0, "Down arrow with 0 results should do nothing")
         print("      ✔ Up/Down arrow result navigation with wrap-around (first + ↑ -> last, last + ↓ -> first) verified")
 
-        // 8. Direct selection and index safety
+        // 9. Direct selection and index safety
         print("    ▶ Testing direct category selection & clampSelection...")
         controller.selectCategory(.images)
         assert(controller.selectedCategory == .images, "Selected category should be .images")
@@ -125,7 +159,7 @@ public struct QuickOverlayNavigationTests {
         assert(controller.selectedResultIndex == 0, "clampSelection with 0 results should reset index to 0")
         print("      ✔ Direct category selection & clampSelection safety verified")
 
-        // 9. Overlay Geometry Constraints (520x300 min, 600x380 default, 1000x700 max)
+        // 10. Overlay Geometry Constraints (520x300 min, 600x380 default, 1000x700 max)
         print("    ▶ Testing OverlayGeometry constraints...")
         assert(OverlayGeometry.minWidth == 520, "minWidth must be 520")
         assert(OverlayGeometry.minHeight == 300, "minHeight must be 300")
